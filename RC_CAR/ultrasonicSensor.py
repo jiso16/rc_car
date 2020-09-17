@@ -1,10 +1,8 @@
-import RPi.GPIO as gpio
+import RPi.GPIO as GPIO
 import time
 
-print("starr")
-
-frt_trig = 20
-frt_echo = 21
+frt_trig = 26
+frt_echo = 19
 
 rig_trig = 13
 rig_echo = 16
@@ -12,36 +10,37 @@ rig_echo = 16
 left_trig = 6
 left_echo = 12
 
-gpio.setmode(gpio.BCM)
-gpio.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
-gpio.setup(frt_trig , gpio.OUT)
-gpio.setup(rig_trig , gpio.OUT)
-gpio.setup(left_trig , gpio.OUT)
+GPIO.setup(frt_trig , GPIO.OUT)
+GPIO.setup(rig_trig , GPIO.OUT)
+GPIO.setup(left_trig , GPIO.OUT)
 
-gpio.setup(frt_echo , gpio.IN)
-gpio.setup(rig_echo , gpio.IN)
-gpio.setup(left_echo , gpio.IN)
+GPIO.setup(frt_echo , GPIO.IN)
+GPIO.setup(rig_echo , GPIO.IN)
+GPIO.setup(left_echo , GPIO.IN)
 
-def dist(trig, echo):
+def dist(name_list, trig, echo):
     global  str, end
-    gpio.output(trig, False)
+    GPIO.output(trig, False)
     time.sleep(0.5)
-    gpio.output(trig, True)
+    GPIO.output(trig, True)
     time.sleep(0.00001)
-    gpio.output(trig, False)
+    GPIO.output(trig, False)
 
-    while gpio.input(echo) == 0:
+    while GPIO.input(echo) == 0:
         srt = time.time()
-    while gpio.input(echo) == 1:
+    while GPIO.input(echo) == 1:
         end = time.time()
 
     puls_drtn = end-srt
     distance = puls_drtn * 17000
     distance = round(distance, 2)
 
+    print(name_list,"dist: ",distance)
+
 while True:
-    frt_dist = dist(frt_trig, frt_echo)
-    rig_dist = dist(rig_trig, rig_echo)
-    left_dist = dist(left_trig, left_echo)
-    print("frt_dist: {}cm/ rig_dist: {}cm/ left_dist: {}cm".format(frt_dist,rig_dist,left_dist))
+    frt_dist = dist("front",frt_trig, frt_echo)
+    rig_dist = dist("right",rig_trig, rig_echo)
+    left_dist = dist("left", left_trig, left_echo)
