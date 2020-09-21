@@ -73,7 +73,7 @@ def setMotor(ch, speed, stat):
     if ch == CH1:
         setMotorControl(pwmA, IN1, IN2, speed, stat)
     else:
-        setMotorControl((pwmB, IN3, IN4, speed, stat))
+        setMotorControl(pwmB, IN3, IN4, speed, stat)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
