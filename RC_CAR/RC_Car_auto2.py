@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+
 #motor_code
 STOP = 0
 FORWARD = 1
@@ -38,17 +39,18 @@ left_echo = 10 #pin19
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-GPIO.setup(frt_trig , GPIO.OUT)
-GPIO.setup(rig_trig , GPIO.OUT)
-GPIO.setup(left_trig , GPIO.OUT)
-GPIO.setup(back_trig , GPIO.OUT)
+GPIO.setup(8, GPIO.OUT)
+GPIO.setup(25, GPIO.IN)
 
-GPIO.setup(frt_echo , GPIO.IN)
-GPIO.setup(rig_echo , GPIO.IN)
-GPIO.setup(left_echo , GPIO.IN)
-GPIO.setup(back_echo , GPIO.IN)
+GPIO.setup(1, GPIO.OUT)
+GPIO.setup(7, GPIO.IN)
 
-#motor_function
+GPIO.setup(9, GPIO.OUT)
+GPIO.setup(10, GPIO.IN)
+
+GPIO.setup(22, GPIO.OUT)
+GPIO.setup(27, GPIO.IN)
+
 def setPinConfig(EN, INA, INB):
     GPIO.setup(EN, GPIO.OUT)
     GPIO.setup(INA, GPIO.OUT)
@@ -78,9 +80,10 @@ def setMotor(ch, speed, stat):
 pwmA = setPinConfig(ENA, IN1, IN2)
 pwmB = setPinConfig(ENB, IN3, IN4)
 
-#ultrasonic function
+
+# ultrasonic function
 def dist(trig, echo):
-    global  str, end
+    global str, end
 
     GPIO.output(trig, False)
     time.sleep(0.5)
@@ -93,36 +96,41 @@ def dist(trig, echo):
     while GPIO.input(echo) == 1:
         end = time.time()
 
-    puls_drtn = end-srt
+    puls_drtn = end - srt
     distance = puls_drtn * 17000
     distance = round(distance, 2)
 
     return distance
 
-def Max_dist(front, right, left, back):
-    Max = max(front, right, left, back)
-    return Max
+def exercise(right, left):
+    setMotor(CH1, 30, BACKWARD)
+    setMotor(CH2, 30, BACKWARD)
+    time.sleep(1)
 
-def Motor_Way(front, right, left, back):
-    if Max == front:
-        setMotor(CH1, 50, FORWARD)
-        setMotor(CH2, 50, FORWARD)
-    elif Max == right:
-        setMotor(CH1, 20, FORWARD)
-        setMotor(CH2, 50, FORWARD)
+    Max = max(right, left)
+    if Max == right:
+        setMotor(CH1, 35, FORWARD)
+        setMotor(CH2, 15, FORWARD)
+        time.sleep(1)
+        print("right is Max")
+
     elif Max == left:
-        setMotor(CH1, 50, FORWARD)
-        setMotor(CH2, 20, FORWARD)
-    elif Max == back:
-        setMotor(CH1, 50, BACKWARD)
-        setMotor(CH2, 50, BACKWARD)
+        setMotor(CH1, 15, FORWARD)
+        setMotor(CH2, 35, FORWARD)
+        time.sleep(1)
+        print("left is Max")
+
+def motor():
+    if frt_dist>20:
+        setMotor(CH1, 30, FORWARD)
+        setMotor(CH2, 30, FORWARD)
+    elif frt_dist < 20:
+        exercise(rig_dist, lef_dist)
 
 while True:
+
     frt_dist = dist(frt_trig, frt_echo)
     rig_dist = dist(rig_trig, rig_echo)
-    left_dist = dist(left_trig, left_echo)
-    back_dist = dist(back_trig, back_echo)
-    print("front: {}cm, right: {}cm, left:{}cm, back: {}cm".format(frt_dist,rig_dist,left_dist,back_dist))
-    Max = Max_dist(frt_dist, rig_dist, left_dist, back_dist)
-    print("Max={}".format(Max))
-    Motor = Motor_Way(frt_dist, rig_dist, left_dist, back_dist)
+    lef_dist = dist(left_trig, left_echo)
+    print("front : {}cm, right: {}cm, left: {}cm".format(frt_dist, rig_dist, lef_dist))
+    RC = motor()
