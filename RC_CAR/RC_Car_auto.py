@@ -75,15 +75,13 @@ def setMotor(ch, speed, stat):
     else:
         setMotorControl(pwmB, IN3, IN4, speed, stat)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
 pwmA = setPinConfig(ENA, IN1, IN2)
 pwmB = setPinConfig(ENB, IN3, IN4)
 
 #ultrasonic function
 def dist(trig, echo):
     global  str, end
+
     GPIO.output(trig, False)
     time.sleep(0.5)
     GPIO.output(trig, True)
