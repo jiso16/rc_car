@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 RC_CAR/.idea/inspectionProfiles
 RC_CAR/.idea
+RC_CAR_auto/.idea/inspectionProfiles
+RC_CAR_auto/.idea
+RC_CAR_control/.idea
